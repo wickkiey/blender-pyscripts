@@ -160,10 +160,9 @@ cython_debug/
 #.idea/
 
 # Project specific
-outputs/
+outputs/*.glb
+outputs/*.obj
+outputs/*.mtl
 venv_trellis/
-*.glb
-*.obj
-*.mtl
 *.blend
 *.blend1
