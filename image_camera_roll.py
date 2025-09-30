@@ -16,7 +16,7 @@ import math
 import os
 
 # Configuration
-IMAGE_PATH = "/path/to/your/image.jpg"  # Update this path to your image
+IMAGE_PATH = "D:\\wickkiey_git\\blender-pyscripts\\image.png"  # Update this path to your image
 ANIMATION_FRAMES = 250  # Total frames for the animation
 CAMERA_DISTANCE = 10.0  # Distance of camera from image plane
 CAMERA_FOV = 50.0  # Camera field of view in degrees
@@ -54,6 +54,9 @@ def create_image_plane(image_path):
     plane = bpy.context.active_object
     plane.name = "ImagePlane"
     plane.scale = (plane_width / 2, plane_height / 2, 1)
+    
+    # Rotate plane 90 degrees around X-axis so it faces the camera
+    plane.rotation_euler = (math.radians(90), 0, 0)
     
     # Create material with image texture
     mat = bpy.data.materials.new(name="ImageMaterial")
@@ -103,7 +106,7 @@ def create_camera_with_animation(plane, plane_dimensions):
     camera.data.lens_unit = 'FOV'
     camera.data.angle = math.radians(CAMERA_FOV)
     
-    # Point camera at the plane center initially
+    # Point camera at the vertical plane (rotate 90 degrees around X to look forward)
     camera.rotation_euler = (math.radians(90), 0, 0)
     
     # Enable depth of field for cinematic effect
@@ -181,11 +184,14 @@ def setup_render_settings():
     # Set frame rate
     scene.render.fps = 30
     
-    # Use Cycles for better rendering (optional, Eevee is faster for preview)
-    scene.render.engine = 'BLENDER_EEVEE'
+    # Use Eevee Next for better rendering (faster than Cycles for preview)
+    scene.render.engine = 'BLENDER_EEVEE_NEXT'
     
-    # Enable motion blur for smoother animation
-    scene.eevee.use_motion_blur = True
+    # Enable motion blur for smoother animation (if available)
+    if hasattr(scene.eevee, 'use_motion_blur'):
+        scene.eevee.use_motion_blur = True
+    elif hasattr(scene.render, 'use_motion_blur'):
+        scene.render.use_motion_blur = True
     scene.render.film_transparent = False
 
 
